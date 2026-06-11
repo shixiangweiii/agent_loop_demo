@@ -232,6 +232,6 @@
 
 | 阶段 | 状态 | 说明 |
 |---|---|---|
-| **M0 Walking Skeleton** | ✅ 已完成（2026-06-11） | 包 `mu/`（async-first loop + 4 工具 + 官方 openai SDK + 线性历史 + stdout）；plan 见 `plan/M0-Walking-Skeleton-plan.md`；19 单测通过；离线闭环 e2e（write→write→bash(pytest)）跑通。传输层按用户要求用 openai SDK 对接 OpenAI 兼容端点（百炼/DeepSeek），细化自 roadmap 原定 litellm（见 §2）。 |
-| **M1 Harness Core + 可观测** | ✅ 已完成（2026-06-11） | 新增 `events/session/context/observability/render`，改造 `model/tools/agent/cli`；落地事件流、上下文管线、tree session（JSONL + 分支/续跑/侧分支摘要）、可选流式 + abort + terminate、延迟-成本归因报告。plan 见 `plan/M1-Harness-Core-plan.md`；38 单测通过；离线集成验证（renderer+归因+持久化+resume+branch summary）通过。两项决策：session=`./.mu/sessions/`（MU_SESSION_DIR 可覆盖）、流式默认 off（`--stream` 开）。M0 闭环回归测试保持绿。 |
+| **M0 Walking Skeleton** | ✅ 已完成（2026-06-11） | 包 `mu/`（async-first loop + 4 工具 + 官方 openai SDK + 线性历史 + stdout）；plan 见 `plan/M0-Walking-Skeleton-plan.md`；离线闭环 e2e（write→write→bash(pytest)）跑通。传输层按用户要求用 openai SDK 对接 OpenAI 兼容端点（百炼/DeepSeek），细化自 roadmap 原定 litellm（见 §2）。代码评审修复 bash timeout 进程组清理 + README/.env 一致性，**21 单测通过**。 |
+| **M1 Harness Core + 可观测** | ✅ 已完成 + 评审修复（2026-06-11） | 新增 `events/session/context/observability/render`，改造 `model/tools/agent/cli`；落地事件流、上下文管线、tree session（JSONL + 分支/续跑/侧分支摘要）、可选流式 + abort + terminate、延迟-成本归因报告。plan 见 `plan/M1-Harness-Core-plan.md`。**代码评审已修**：P1 取消时补全 tool 结果（session 可 resume）、P2 实现 `Agent.summarize_branch`+`Session.path_to`、P3a 归因 collector RunStarted 重置、P3b 版本同步 0.1.0。**41 单测通过**；离线集成验证（renderer+归因+持久化+resume+branch summary）通过；M0 闭环回归保持绿。两项决策：session=`./.mu/sessions/`（MU_SESSION_DIR 可覆盖）、流式默认 off（`--stream` 开）。 |
 | M2 / M3 / M3.5 | ⏳ 未开始 | — |
