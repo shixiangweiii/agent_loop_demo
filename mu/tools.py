@@ -12,6 +12,25 @@ from .environment import LocalEnvironment
 ToolHandler = Callable[[LocalEnvironment, dict[str, Any]], Awaitable[str]]
 
 
+class ToolResult(str):
+    """工具结果：本身是字符串（向后兼容 M0），附带 terminate 标志。
+
+    terminate=True 提示 loop 跳过本次工具批之后的自动 LLM 调用（Pi 的 terminate 语义）。
+    内置四工具永不 terminate；该 seam 供 M3 扩展使用。
+    """
+
+    terminate: bool
+
+    def __new__(cls, content: str, terminate: bool = False) -> "ToolResult":
+        obj = super().__new__(cls, content)
+        obj.terminate = terminate
+        return obj
+
+    @property
+    def content(self) -> str:
+        return str(self)
+
+
 # ---- 工具实现 ----
 
 async def _read(env: LocalEnvironment, args: dict[str, Any]) -> str:
@@ -171,13 +190,16 @@ class ToolRegistry:
     def names(self) -> list[str]:
         return list(self._handlers)
 
-    async def execute(self, name: str, args: dict[str, Any]) -> str:
+    async def execute(self, name: str, args: dict[str, Any]) -> ToolResult:
         handler = self._handlers.get(name)
         if handler is None:
-            return f"Error: unknown tool '{name}'."
+            return ToolResult(f"Error: unknown tool '{name}'.")
         try:
-            return await handler(self._env, args)
+            result = await handler(self._env, args)
         except KeyError as e:
-            return f"Error: missing required argument {e} for tool '{name}'."
+            return ToolResult(f"Error: missing required argument {e} for tool '{name}'.")
         except Exception as e:  # noqa: BLE001 - 工具错误转字符串
-            return f"Error executing tool '{name}': {e}"
+            return ToolResult(f"Error executing tool '{name}': {e}")
+        if isinstance(result, ToolResult):
+            return result
+        return ToolResult(result)

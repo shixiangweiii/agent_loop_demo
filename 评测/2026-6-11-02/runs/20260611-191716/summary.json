@@ -1,0 +1,49 @@
+{
+  "run_dir": "/Users/shixiangweii/PycharmProjects/2026_qoder_proj/agent_loop_demo/评测/2026-6-11-02/runs/20260611-191716",
+  "model": "qwen3.7-plus",
+  "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+  "api_key_recorded": false,
+  "passed": 3,
+  "total": 3,
+  "results": [
+    {
+      "name": "create_pytest_project",
+      "passed": true,
+      "agent_returncode": 0,
+      "agent_duration_seconds": 44.02,
+      "agent_timed_out": false,
+      "validation_returncode": 0,
+      "notes": [],
+      "workspace": "/Users/shixiangweii/PycharmProjects/2026_qoder_proj/agent_loop_demo/评测/2026-6-11-02/runs/20260611-191716/create_pytest_project/workspace",
+      "stdout_file": "/Users/shixiangweii/PycharmProjects/2026_qoder_proj/agent_loop_demo/评测/2026-6-11-02/runs/20260611-191716/create_pytest_project/agent_stdout.txt",
+      "stderr_file": "/Users/shixiangweii/PycharmProjects/2026_qoder_proj/agent_loop_demo/评测/2026-6-11-02/runs/20260611-191716/create_pytest_project/agent_stderr.txt",
+      "validation_file": "/Users/shixiangweii/PycharmProjects/2026_qoder_proj/agent_loop_demo/评测/2026-6-11-02/runs/20260611-191716/create_pytest_project/validation.txt"
+    },
+    {
+      "name": "fix_existing_bug",
+      "passed": true,
+      "agent_returncode": 0,
+      "agent_duration_seconds": 22.29,
+      "agent_timed_out": false,
+      "validation_returncode": 0,
+      "notes": [],
+      "workspace": "/Users/shixiangweii/PycharmProjects/2026_qoder_proj/agent_loop_demo/评测/2026-6-11-02/runs/20260611-191716/fix_existing_bug/workspace",
+      "stdout_file": "/Users/shixiangweii/PycharmProjects/2026_qoder_proj/agent_loop_demo/评测/2026-6-11-02/runs/20260611-191716/fix_existing_bug/agent_stdout.txt",
+      "stderr_file": "/Users/shixiangweii/PycharmProjects/2026_qoder_proj/agent_loop_demo/评测/2026-6-11-02/runs/20260611-191716/fix_existing_bug/agent_stderr.txt",
+      "validation_file": "/Users/shixiangweii/PycharmProjects/2026_qoder_proj/agent_loop_demo/评测/2026-6-11-02/runs/20260611-191716/fix_existing_bug/validation.txt"
+    },
+    {
+      "name": "implement_slugify",
+      "passed": true,
+      "agent_returncode": 0,
+      "agent_duration_seconds": 39.78,
+      "agent_timed_out": false,
+      "validation_returncode": 0,
+      "notes": [],
+      "workspace": "/Users/shixiangweii/PycharmProjects/2026_qoder_proj/agent_loop_demo/评测/2026-6-11-02/runs/20260611-191716/implement_slugify/workspace",
+      "stdout_file": "/Users/shixiangweii/PycharmProjects/2026_qoder_proj/agent_loop_demo/评测/2026-6-11-02/runs/20260611-191716/implement_slugify/agent_stdout.txt",
+      "stderr_file": "/Users/shixiangweii/PycharmProjects/2026_qoder_proj/agent_loop_demo/评测/2026-6-11-02/runs/20260611-191716/implement_slugify/agent_stderr.txt",
+      "validation_file": "/Users/shixiangweii/PycharmProjects/2026_qoder_proj/agent_loop_demo/评测/2026-6-11-02/runs/20260611-191716/implement_slugify/validation.txt"
+    }
+  ]
+}
