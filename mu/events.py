@@ -88,6 +88,33 @@ class ErrorEvent(Event):
     message: str
 
 
+# ---- 扩展相关事件（M3：让扩展不成为黑盒）----
+
+@dataclass
+class ExtensionLoaded(Event):
+    name: str
+    version: str
+    tools: list[str]
+
+
+@dataclass
+class ExtensionUnloaded(Event):
+    name: str
+
+
+@dataclass
+class ExtensionLog(Event):
+    name: str
+    level: str
+    message: str
+
+
+@dataclass
+class ExtensionError(Event):
+    name: str
+    message: str
+
+
 Subscriber = Callable[[Event], None]
 
 

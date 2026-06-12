@@ -12,6 +12,10 @@ from .events import (
     AssistantTextDelta,
     ErrorEvent,
     Event,
+    ExtensionError,
+    ExtensionLoaded,
+    ExtensionLog,
+    ExtensionUnloaded,
     RunAborted,
     RunStarted,
     ToolCallFinished,
@@ -55,6 +59,14 @@ class StdoutRenderer:
             self._line(f"[aborted: {event.reason}]")
         elif isinstance(event, ErrorEvent):
             self._line(f"[error: {event.message}]")
+        elif isinstance(event, ExtensionLoaded):
+            self._line(f"🧩 loaded {event.name} v{event.version}: {', '.join(event.tools)}")
+        elif isinstance(event, ExtensionUnloaded):
+            self._line(f"🧩 unloaded {event.name}")
+        elif isinstance(event, ExtensionLog):
+            self._line(f"🧩 [{event.name}] {event.message}")
+        elif isinstance(event, ExtensionError):
+            self._line(f"🧩 [{event.name}] error: {event.message}")
 
     def _block(self, label: str, body: str) -> None:
         self._out.write(f"\n=== {label} ===\n{body}\n")

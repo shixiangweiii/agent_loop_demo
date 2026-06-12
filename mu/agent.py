@@ -30,6 +30,7 @@ from .events import (
     TurnFinished,
     TurnStarted,
 )
+from .extension import ExtensionManager
 from .model import Model
 from .prompts import SYSTEM_PROMPT
 from .session import Session
@@ -48,6 +49,8 @@ class Agent:
         stream: bool = False,
         transform_context: Transform | None = None,
         convert_to_llm: Transform | None = None,
+        extensions: bool = True,
+        ext_dir: Any | None = None,
     ) -> None:
         self.model = model if model is not None else Model()
         self.tools = tools or ToolRegistry()
@@ -56,6 +59,12 @@ class Agent:
         self.stream = stream
         self._transform = transform_context or ctx.transform_context
         self._convert = convert_to_llm or ctx.convert_to_llm
+        # 自延伸：ExtensionManager 在 registry 里注册 load/reload/list_extensions 管理工具
+        self.extensions = (
+            ExtensionManager(self.tools, self.session, self.emitter, ext_dir=ext_dir)
+            if extensions
+            else None
+        )
 
     @property
     def messages(self) -> list[dict[str, Any]]:
@@ -68,6 +77,8 @@ class Agent:
             self.session.append({"role": "system", "content": SYSTEM_PROMPT})
         self.session.append({"role": "user", "content": task})
         self.emitter.emit(RunStarted(task, self.session.id))
+        if self.extensions is not None:
+            await self.extensions.autoload()
 
         turn = 0
         try:
@@ -176,6 +187,11 @@ class Agent:
             summary_text = "侧分支结论：" + " | ".join(parts[-3:]) if parts else "侧分支无产出"
         self.session.branch_from(return_to)
         return self.session.add_branch_summary(summary_text)
+
+    async def aclose(self) -> None:
+        """清理：卸载并杀掉所有扩展子进程。CLI/TUI 在 finally 调用。"""
+        if self.extensions is not None:
+            await self.extensions.aclose()
 
 
 def _message_to_dict(message: Any) -> dict[str, Any]:

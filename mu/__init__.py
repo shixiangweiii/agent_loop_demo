@@ -2,6 +2,7 @@
 from .agent import Agent
 from .environment import LocalEnvironment
 from .events import EventEmitter
+from .extension import ExtensionManager
 from .model import Model, ModelResult
 from .observability import AttributionCollector
 from .render import StdoutRenderer
@@ -19,5 +20,6 @@ __all__ = [
     "EventEmitter",
     "StdoutRenderer",
     "AttributionCollector",
+    "ExtensionManager",
 ]
 __version__ = "0.1.0"

@@ -51,7 +51,8 @@ class FakeModel:
 
 
 def _agent(model, tmp_path) -> Agent:
-    return Agent(model=model, tools=ToolRegistry(), session=Session(base_dir=tmp_path))
+    # extensions=False：这些测试聚焦 loop 行为，扩展机制由 test_extension.py 覆盖
+    return Agent(model=model, tools=ToolRegistry(), session=Session(base_dir=tmp_path), extensions=False)
 
 
 async def test_loop_executes_tool_then_stops(tmp_path):
@@ -180,7 +181,7 @@ async def test_cancel_during_tool_execution_keeps_session_resumable(tmp_path):
     """P1 回归：工具执行中被取消，session 不留 dangling tool_call（每个 tool_call 都有结果）。"""
     session = Session(base_dir=tmp_path)
     model = FakeModel([FakeMessage(tool_calls=[FakeToolCall("call_1", "slow", "{}")])])
-    agent = Agent(model=model, tools=_SlowRegistry(), session=session)
+    agent = Agent(model=model, tools=_SlowRegistry(), session=session, extensions=False)
 
     task = asyncio.create_task(agent.run("trigger slow tool"))
     await asyncio.sleep(0.05)  # 让它进入工具执行
@@ -210,7 +211,7 @@ async def test_summarize_branch_brings_summary_to_mainline(tmp_path):
     session.branch_from(user_id)  # 从 user 开 side-quest
     side_leaf = session.append({"role": "assistant", "content": "fixed tool X on side quest"})
 
-    agent = Agent(model=FakeModel([]), tools=ToolRegistry(), session=session)
+    agent = Agent(model=FakeModel([]), tools=ToolRegistry(), session=session, extensions=False)
     agent.summarize_branch(side_leaf, return_to=main_leaf)  # deterministic 概括
 
     path = session.path_to_head()

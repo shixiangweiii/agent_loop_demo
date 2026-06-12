@@ -56,7 +56,7 @@ async def test_terminate_stops_loop_after_tool_batch(tmp_path):
         _FM(content="should-not-reach"),  # 若 loop 继续才会用到
     ]
     model = FakeModel(scripted)
-    agent = Agent(model=model, tools=TerminatingRegistry(), session=Session(base_dir=tmp_path))
+    agent = Agent(model=model, tools=TerminatingRegistry(), session=Session(base_dir=tmp_path), extensions=False)
 
     final = await agent.run("do something")
 
