@@ -128,12 +128,13 @@
 - **完成标志**：两项均可**独立开关**；关闭后 μ 退回 M3 形态；code-action 在至少一个真实任务上对 bash 有可测量收益。
 - **为何独立成阶段**：两项依赖 M3 的隔离/协议基座；单列便于「关掉即退回极简」的验收。
 
-### M4 — 研究级扩展（v2，M4.0 基座已完成）
+### M4 — 研究级扩展（v2，M4.1 eval 护栏已硬化）
 
 - **目标**：在稳定极简核上叠加高不确定性能力；先落 eval 护栏，再谈自进化。
 - **已完成（M4.0）**：库内 eval runner + basic coding suite + DGM-lite 候选隔离验证 / append-only archive。通过项只归档，不自动应用回主仓库。
+- **已完成并验收（M4.1）**：eval 路径绝对化、validator pytest rootdir/test file 固定、secret scan（过程产物 + workspace 内真实 env secret 精确匹配）、full gate 入口。M4.0 回归 WARN 作为历史记录保留，M4.1 专门修复；验收见 `评测/2026-6-12-02-m4.1-real/` 与 `评测/2026-6-12-02-m4.1-real-cli/`。
 - **后续范围**：🟡 程序性记忆 / meta-tool 编译热路径；🟠 投机/异步执行（隐藏工具等待）；自动应用通过候选。
-- **完成标志**：每项可独立开关，关掉后退回 v1 形态；M4.0 已具备 eval 护栏和候选 archive 基座，后续能力必须先过 eval。
+- **完成标志**：每项可独立开关，关掉后退回 v1 形态；M4.1 已具备更稳定的 eval 护栏和候选 archive 基座，后续能力必须先过 eval / full gate。
 - **为何最后**：高不确定、依赖前序基座；M4.0 只做护栏与归档底座，避免直接进入自动自改主仓库。
 
 ---
@@ -145,7 +146,7 @@
 | **内置可观测 / 延迟-成本归因底座** | 🟢 v1 | **M1** | 事件流自然产物：每任务拆 LLM/工具/轮数/token | What Limits Agentic Efficiency |
 | **Native code-as-action**（不绕 bash） | 🟢 v1 | **M3.5** | 验收须对 bash 有可测量收益，否则砍 | CodeAct / smolagents / Code Mode |
 | **可插拔安全/权限/沙箱层（默认关）** | 🟢 v1 | **M3.5** | 建在 M3 subprocess 隔离之上；默认关退回 YOLO | Pi 局限分析 |
-| **DGM-lite：扩展提案经 eval 护栏自改进** | 🟡 v2 | **M4.0 ✅ 基座已完成** | 已落 eval runner + 候选隔离 + append-only archive；自动应用留后续 | Darwin Gödel Machine + 程序性记忆 |
+| **DGM-lite：扩展提案经 eval 护栏自改进** | 🟡 v2 | **M4.1 ✅ eval 护栏已硬化** | 已落 eval runner + 候选隔离 + append-only archive + full gate；自动应用留后续 | Darwin Gödel Machine + 程序性记忆 |
 | **程序性记忆 / meta-tool 编译热路径** | 🟡 v2 | **M4 后续** | 把高频自延伸路径固化为确定性工具 | ProcMEM / AWM / meta-tools |
 | **投机/异步执行（隐藏工具等待）** | 🟠 v2 | **M4 后续** | 收益依赖可预测性 + 副作用边界；复杂度高 | PASTE / Speculative Actions |
 
@@ -239,4 +240,5 @@
 | **M3 自延伸基座** | ✅ 已完成（2026-06-11） | 新增 `extension.py`（`ExtensionManager`：子进程 + JSONL IPC + 工具动态注册 + 生命周期 + 状态持久化）、`extsdk.py`（`@tool`/`run_extension` SDK）、`extensions/`（示例+文档）；`tools.py` 加 register/unregister，`agent.py` owns manager + autoload + aclose，events/render/prompts/cli/tui 接线。最小扩展协议（manifest/IPC/state/reload/错误回流事件流）落地；扩展状态存 session、`--resume` 恢复；`./.mu/extensions/` 自动加载。**子进程=崩溃隔离，非安全沙箱（→M3.5）**。53 单测通过（+9 扩展测试，含 FakeModel 自延伸闭环）。两决策：子进程隔离 + 自动加载目录、系统提示加自延伸提示。plan 见 `plan/M3-Self-extension-plan.md`。 |
 | **M3.5 code-action + 可插拔安全/沙箱** | ✅ 已完成（2026-06-12）→ **v1 完整** | 新增 `permission.py`（allow/readonly/workspace 策略，钩在 `ToolRegistry.execute` 单一入口 gate 内置/扩展/code-action 内层）、`codeact.py`（`code` 工具：进程内 exec + `mu.*` 线程↔事件循环桥，一次组合多工具）、`environment.py` 加 `Environment` Protocol + `make_environment` + 实验性 `DockerEnvironment`；`agent/cli/tui/prompts` 接线 `--code/--permission/--sandbox`（均默认关=YOLO，关掉退回 M3）。**65 单测通过 + 1 skipped（docker）**；code-action 离线收益验证（1 轮 code 跑 3 次内层 read vs 3 轮）。决策：code-action 进程内 exec（用户锁定）、三项默认全关、沙箱=抽象+本地+Docker 实验。边界：进程内 exec 同 bash 风险、真隔离靠跑容器；E2B/Modal 仅留接口。plan 见 `plan/M3.5-CodeAction-Sandbox-plan.md`。**代码评审已修**：P1-a 权限层从「工具名黑名单」升级为**capability gating**（readonly/workspace 真正拦住 code/extension/bash，autoload 在 restrictive 策略下跳过）；P1-b code 超时改为诚实 soft-timeout（消息 + 取消 token 阻断滞留线程的 mu.* 调用；直 I/O 仍不可硬停，已文档化）；P2 Docker 加 `--network none` + 文件 IO 限制如实标注；P3 pyproject 同步 M3.5。**72 单测通过 + 1 skipped**。 |
 | **M4.0 Eval + DGM-lite 基座** | ✅ 已完成 + 回归评测 WARN（2026-06-12） | 新增 `mu.eval`（库内 eval API + `python -m mu.eval`，复用基础 coding suite、独立 workspace、外部 validator、summary redaction）与 `mu.dgm`（候选 workspace 复制隔离、`.mu/extensions` / `.mu/prompts` / `extensions` 范围限制、append-only archive + latest summary、best 标记）。Prompt 候选通过 `MU_PROMPT_SNIPPET_DIR` / `.mu/prompts` 片段注入，不直接改 `SYSTEM_PROMPT`；通过项只归档，不自动应用主仓库。plan 见 `plan/M4.0-Eval-DGM-lite-plan.md`。回归评测见 `评测/2026-6-12-01/`：全量离线 `83 passed, 1 skipped`；DGM-lite archive smoke `3/3 PASS`；真实模型 basic eval 产物最终 `3/3` 可验证通过，但原始 full run 暴露 `mu.eval` validator / 相对路径稳定性问题（需后续修复路径绝对化与 pytest rootdir/test file 指定）。 |
+| **M4.1 Eval Hardening** | ✅ 已完成并验收（2026-06-12） | 在 M4.0 基座上修复回归 WARN：`run_root` / workspace / summary / prompt / `EvalResult` 路径统一绝对化；validator pytest 显式 `--rootdir <workspace>` 并指定任务测试文件；新增 `scan_eval_artifacts_for_secrets`（扫描过程产物与 summary，默认忽略复制 workspace fixture 中的 `sk-...` 假 key，但 workspace 内真实 env secret 精确值会失败）；`python -m mu.eval` 输出绝对 run dir、`Passed: x/y`、secret scan；新增 `python -m mu.eval_gate` 串联离线 pytest、真实 basic eval、DGM-lite fake-agent smoke 并写入 `评测/<date-run>/`。验收结果：全量离线 `87 passed, 1 skipped`；真实 full gate 见 `评测/2026-6-12-02-m4.1-real/`，overall PASS、secret scan PASS、真实 basic eval `3/3`、DGM smoke PASS；原始 CLI full run 见 `评测/2026-6-12-02-m4.1-real-cli/real-eval-runs/`，直接 `3/3 PASS` 且 secret scan PASS。plan 见 `plan/M4.1-Eval-Hardening-plan.md`。 |
 | **v2（M4 后续，研究级）** | ⏳ 未开始 | 程序性记忆/meta-tool 编译、投机/异步执行、自动应用通过候选等高不确定能力。 |

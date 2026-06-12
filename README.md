@@ -1,4 +1,4 @@
-# μ (mu) — minimal Pi-style coding agent · M4.0 eval/DGM-lite 基座
+# μ (mu) — minimal Pi-style coding agent · M4.1 eval hardening
 
 按 Pi 的实现思路用 Python 复刻的极简 coding agent：一个**薄 async loop** + **四个工具**（read / write / edit / bash）+ **原生 function-calling** + **OpenAI 兼容**模型后端（百炼/DashScope、DeepSeek、OpenAI…）。
 
@@ -8,7 +8,7 @@
 - **M2** Textual 终端界面：`--tui` 交互式 UI，复用同一 core（事件流的又一个消费者）。headless stdout 仍为默认。
 - **M3** 自延伸：agent 可**自己写 Python 工具扩展**并 `load_extension` 加载（子进程隔离 + JSONL 协议）；扩展状态存 session、`--resume` 恢复；`./.mu/extensions/` 启动自动加载。
 - **M3.5** native code-action（`--code`，一次写 Python 组合多工具）+ 可插拔权限/沙箱层（`--permission` / `--sandbox`，默认 YOLO）。**v1 到此完整。**
-- **M4.0** eval + DGM-lite 基座：库内 eval runner、候选隔离验证、append-only archive。默认不改变主仓库。
+- **M4.1** eval hardening：库内 eval runner、DGM-lite archive、绝对路径 summary、固定 pytest validator rootdir、过程产物 secret scan、full gate。
 
 ## 安装（用仓库自带 .venv）
 
@@ -95,9 +95,9 @@ agent 缺能力时可**自己写一个 Python 工具扩展**，用 `load_extensi
 
 > ⚠️ code-action 在 `allow` 下是进程内 exec（同 bash 风险，可 `import os` 绕过）；`readonly/workspace` 会整体拦掉 code 工具。code 超时是 soft timeout（线程可能滞留，但其 mu.* 调用会被拒）。要真隔离把 μ 跑容器里。三项默认全关，关掉即退回 M3 形态。
 
-## Eval 与 DGM-lite（M4.0，实验基座）
+## Eval 与 DGM-lite（M4.1，实验基座 + 护栏硬化）
 
-`python -m mu.eval` 运行库内 eval suite。默认内置 `basic-coding` 三个任务，产物写入 `eval_runs/<timestamp>/`，summary 不记录 API key。
+`python -m mu.eval` 运行库内 eval suite。默认内置 `basic-coding` 三个任务，产物写入 `eval_runs/<timestamp>/`，summary 不记录 API key，并对过程产物运行 secret scan。扫描会覆盖 stdout/stderr/validation/summary/archive 等过程产物；复制 workspace 中的 `sk-...` fixture 不算泄漏，但如果 workspace 文件含真实运行时 env secret 精确值会失败。summary 中的 run dir、workspace、prompt/stdout/stderr/validation 路径均为绝对路径；validator pytest 固定 `--rootdir <workspace>` 并只运行任务自己的测试文件。
 
 ```bash
 ./.venv/bin/python -m mu.eval
@@ -113,14 +113,22 @@ agent 缺能力时可**自己写一个 Python 工具扩展**，用 `load_extensi
 
 M4.0 候选范围刻意很窄：`.mu/extensions/*.py`、`.mu/prompts/*.{md,txt}`、`extensions/*.{py,md,txt}`。`readonly/workspace` 下扩展候选会被拒绝，避免绕过 M3.5 权限边界。
 
+M4.1 提供 full gate 入口，串起离线 pytest、真实模型 basic eval、DGM-lite fake-agent smoke，并在最终产物上再跑一次 secret scan。真实模型 eval 只读取当前 shell 的 `MU_BASE_URL` / `MU_MODEL` / `MU_API_KEY` 或 `OPENAI_API_KEY`，不会写入文件。
+
+```bash
+./.venv/bin/python -m mu.eval_gate --run-root "评测/2026-6-12-02"
+# 本地只想验证离线链路时可显式跳过真实模型项：
+./.venv/bin/python -m mu.eval_gate --allow-missing-model
+```
+
 ## 测试（无需联网）
 
 ```bash
 ./.venv/bin/python -m pytest -q
 ```
 
-## 范围（截至 M4.0 · v1 完整 + v2 基座）
+## 范围（截至 M4.1 · v1 完整 + v2 eval 护栏稳定）
 
 已做：四工具 loop、事件流、上下文管线、tree session + branch summary、可选流式 / abort / terminate、归因底座、Textual TUI、自延伸扩展（子进程 + JSONL 协议）、native code-action、可插拔权限/沙箱层。
-M4.0 已做：库内 eval 子系统、基础 coding suite、DGM-lite 候选隔离验证与 archive。
+M4.0/M4.1 已做：库内 eval 子系统、基础 coding suite、DGM-lite 候选隔离验证与 archive、eval 路径/validator/secret scan/full gate 硬化。
 留作 v2 后续：程序性记忆 / meta-tool 编译、投机/异步执行、自动应用通过候选。其余不做：受限解释器、E2B/Modal 具体实现、Web UI / textual serve、完整 compaction、$ 精确计费、并行工具、多 provider 切换。

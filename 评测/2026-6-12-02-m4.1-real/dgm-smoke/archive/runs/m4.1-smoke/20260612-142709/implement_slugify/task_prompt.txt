@@ -1,0 +1,10 @@
+你正在评测目录里的独立工作区：/Users/shixiangweii/PycharmProjects/2026_qoder_proj/agent_loop_demo/评测/2026-6-12-02-m4.1-real/dgm-smoke/archive/runs/m4.1-smoke/20260612-142709/implement_slugify/workspace
+这里已有 string_utils.py 和 pytest 测试。
+请先运行 pytest -q 观察失败，再实现 slugify(text)，要求：
+- 转小写；
+- 非字母数字字符视为分隔符；
+- 多个分隔符合并成一个连字符；
+- 去掉首尾连字符。
+最后再次运行 pytest -q 确认通过。
+完成后给出简短最终回复，不要继续调用工具。
+请优先使用绝对路径。

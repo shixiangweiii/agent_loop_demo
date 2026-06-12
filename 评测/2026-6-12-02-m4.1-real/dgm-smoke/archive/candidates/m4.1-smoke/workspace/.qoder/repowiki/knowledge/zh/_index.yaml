@@ -1,0 +1,57 @@
+# 知识卡导出索引文件
+schema_version: 1
+locale: zh-CN
+branch: main
+exported_at: "2026-06-12T06:00:48Z"
+modules:
+    "":
+        dir_name: μ (mu) — 极简异步 Agent 核心与自延伸脚手架
+        title: μ (mu) — 极简异步 Agent 核心与自延伸脚手架
+        scope: []
+        source_files: []
+        children: []
+        depends_on: []
+        related_to: []
+    docs_and_plan:
+        dir_name: μ (mu) — 极简自延伸 Agent 核心
+        title: μ (mu) — 极简自延伸 Agent 核心
+        scope:
+            - docs/
+            - plan/
+        source_files: []
+        children: []
+        depends_on: []
+        related_to: []
+    eval_artifacts:
+        dir_name: Agent Loop 自动化评测与回归验证体系
+        title: Agent Loop 自动化评测与回归验证体系
+        scope:
+            - 评测/
+            - 测试输出/
+            - temp/
+        source_files: []
+        children: []
+        depends_on: []
+        related_to:
+            - path: mu_core
+    mu_core:
+        dir_name: μ (mu) 异步编码智能体核心
+        title: μ (mu) 异步编码智能体核心
+        scope:
+            - mu/
+        source_files: []
+        children: []
+        depends_on: []
+        related_to:
+            - path: eval_artifacts
+            - path: tests
+    tests:
+        dir_name: 核心功能集成测试套件
+        title: 核心功能集成测试套件
+        scope:
+            - tests/
+        source_files: []
+        children: []
+        depends_on: []
+        related_to:
+            - path: mu_core

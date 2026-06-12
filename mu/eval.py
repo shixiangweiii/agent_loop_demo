@@ -18,7 +18,7 @@ import time
 from dataclasses import asdict, dataclass, field
 from datetime import datetime
 from pathlib import Path
-from typing import Callable, Sequence
+from typing import Any, Callable, Sequence
 
 Validator = Callable[[Path], tuple[int, str, list[str]]]
 SetupFunc = Callable[[Path], tuple[str, Validator]]
@@ -69,6 +69,7 @@ class EvalRun:
     results: list[EvalResult]
     summary_json_file: str
     summary_md_file: str
+    secret_scan: dict[str, Any] = field(default_factory=dict)
 
     @property
     def passed(self) -> int:
@@ -77,6 +78,10 @@ class EvalRun:
     @property
     def total(self) -> int:
         return len(self.results)
+
+    @property
+    def secret_scan_passed(self) -> bool:
+        return bool(self.secret_scan.get("passed", True))
 
 
 def default_project_root() -> Path:
@@ -107,12 +112,97 @@ def redact_secrets(text: str, env: dict[str, str] | None = None) -> str:
     out = text
     source = env or os.environ
     for name, value in source.items():
-        if not value:
-            continue
-        upper = name.upper()
-        if "API_KEY" in upper or upper.endswith("_TOKEN") or upper.endswith("_SECRET"):
+        if _is_secret_env_value(name, value):
             out = out.replace(value, f"[REDACTED:{name}]")
     return out
+
+
+_MIN_SECRET_VALUE_LENGTH = 8
+_SECRET_PATTERN = re.compile(r"sk-[A-Za-z0-9][A-Za-z0-9_-]{8,}")
+_WORKSPACE_IGNORE_REASON = "workspace source fixture is not a process artifact"
+_CACHE_IGNORE_REASON = "bytecode/cache artifact"
+
+
+def scan_eval_artifacts_for_secrets(
+    root: str | Path,
+    env: dict[str, str] | None = None,
+    *,
+    ignore_copied_fixtures: bool = True,
+) -> dict[str, Any]:
+    """Scan eval/DGM process artifacts for leaked secrets.
+
+    By default this skips copied candidate/task workspaces, because those may
+    contain source fixtures such as fake redaction keys. The scan is aimed at
+    persisted process artifacts: stdout/stderr, validation logs, summaries and
+    archive metadata.
+    """
+    root_path = Path(root).resolve()
+    source = env or os.environ
+    secret_values = [
+        (name, value)
+        for name, value in source.items()
+        if _is_secret_env_value(name, value)
+    ]
+    hits: list[dict[str, str]] = []
+    ignored: list[dict[str, str]] = []
+    files = (
+        [root_path]
+        if root_path.is_file()
+        else sorted(p for p in root_path.rglob("*") if p.is_file())
+    )
+    for path in files:
+        rel = path.relative_to(root_path).as_posix() if path != root_path else path.name
+        ignore_reason = _secret_scan_ignore_reason(path, root_path) if ignore_copied_fixtures else None
+        if ignore_reason == _CACHE_IGNORE_REASON:
+            ignored.append({"path": rel, "reason": ignore_reason})
+            continue
+        try:
+            text = path.read_text(encoding="utf-8", errors="ignore")
+        except OSError:
+            continue
+        if ignore_reason == _WORKSPACE_IGNORE_REASON:
+            found_env_secret = False
+            for name, value in secret_values:
+                if value in text:
+                    hits.append({"path": rel, "kind": f"env:{name}"})
+                    found_env_secret = True
+                    break
+            if not found_env_secret:
+                ignored.append({"path": rel, "reason": ignore_reason})
+            continue
+        for name, value in secret_values:
+            if value in text:
+                hits.append({"path": rel, "kind": f"env:{name}"})
+                break
+        if _SECRET_PATTERN.search(text):
+            hits.append({"path": rel, "kind": "pattern:sk"})
+    return {
+        "root": str(root_path),
+        "passed": not hits,
+        "hits": hits,
+        "ignored": ignored,
+    }
+
+
+def _is_secret_env_name(name: str) -> bool:
+    upper = name.upper()
+    return "API_KEY" in upper or "TOKEN" in upper or "SECRET" in upper
+
+
+def _is_secret_env_value(name: str, value: str) -> bool:
+    return bool(value) and len(value) >= _MIN_SECRET_VALUE_LENGTH and _is_secret_env_name(name)
+
+
+def _secret_scan_ignore_reason(path: Path, root: Path) -> str | None:
+    try:
+        parts = path.relative_to(root).parts
+    except ValueError:
+        return None
+    if "workspace" in parts:
+        return _WORKSPACE_IGNORE_REASON
+    if "__pycache__" in parts or path.suffix in {".pyc", ".pyo"}:
+        return _CACHE_IGNORE_REASON
+    return None
 
 
 def build_agent_env(
@@ -172,10 +262,10 @@ def run_eval_suite(
     selected_tasks: Sequence[str] | None = None,
     require_model_env: bool = True,
 ) -> EvalRun:
-    project = Path(project_root) if project_root is not None else default_project_root()
-    root = Path(run_root) if run_root is not None else Path.cwd() / "eval_runs"
+    project = (Path(project_root) if project_root is not None else default_project_root()).resolve()
+    root = (Path(run_root) if run_root is not None else Path.cwd() / "eval_runs").resolve()
     timestamp = datetime.now().strftime("%Y%m%d-%H%M%S")
-    run_dir = root / timestamp
+    run_dir = (root / timestamp).resolve()
     run_dir.mkdir(parents=True, exist_ok=True)
 
     agent_env = build_agent_env(project, source_env=env, extra_env=extra_env)
@@ -195,8 +285,11 @@ def run_eval_suite(
         run_eval_task(task, run_dir, builder, agent_env)
         for task in tasks
     ]
+    # Write once before scanning so summary files themselves are included.
+    summary_json, summary_md = write_eval_summary(run_dir, suite.name, results, agent_env)
+    secret_scan = scan_eval_artifacts_for_secrets(run_dir, agent_env)
     summary_json, summary_md = write_eval_summary(
-        run_dir, suite.name, results, agent_env
+        run_dir, suite.name, results, agent_env, secret_scan=secret_scan
     )
     return EvalRun(
         suite_name=suite.name,
@@ -207,6 +300,7 @@ def run_eval_suite(
         results=results,
         summary_json_file=str(summary_json),
         summary_md_file=str(summary_md),
+        secret_scan=secret_scan,
     )
 
 
@@ -216,8 +310,9 @@ def run_eval_task(
     agent_cmd_builder: AgentCommandBuilder,
     agent_env: dict[str, str],
 ) -> EvalResult:
-    task_dir = run_dir / task.name
-    workspace = task_dir / "workspace"
+    run_dir = run_dir.resolve()
+    task_dir = (run_dir / task.name).resolve()
+    workspace = (task_dir / "workspace").resolve()
     workspace.mkdir(parents=True, exist_ok=True)
     prompt, validator = task.setup(workspace)
 
@@ -310,7 +405,10 @@ def write_eval_summary(
     suite_name: str,
     results: list[EvalResult],
     env: dict[str, str],
+    *,
+    secret_scan: dict[str, Any] | None = None,
 ) -> tuple[Path, Path]:
+    run_dir = Path(run_dir).resolve()
     summary_json = run_dir / "summary.json"
     summary_md = run_dir / "summary.md"
     passed = sum(r.passed for r in results)
@@ -322,6 +420,7 @@ def write_eval_summary(
         "api_key_recorded": False,
         "passed": passed,
         "total": len(results),
+        "secret_scan": secret_scan or {},
         "results": [asdict(r) for r in results],
     }
     summary_json.write_text(
@@ -337,16 +436,21 @@ def write_eval_summary(
         f"- Base URL：`{env.get('MU_BASE_URL', '')}`",
         "- API Key：未写入文件，仅运行时环境变量使用",
         f"- 总体：{passed}/{len(results)} 通过",
+        f"- Secret scan：{'PASS' if not secret_scan or secret_scan.get('passed') else 'FAIL'}",
         "",
-        "| 任务 | 结果 | Agent 退出码 | 耗时(s) | 验证退出码 | 备注 |",
-        "|---|---:|---:|---:|---:|---|",
+        "| 任务 | 结果 | 失败阶段 | Agent 退出码 | 耗时(s) | 验证退出码 | 备注 |",
+        "|---|---:|---|---:|---:|---:|---|",
     ]
     for r in results:
         notes = "; ".join(r.notes) if r.notes else ""
         lines.append(
-            f"| {r.name} | {'PASS' if r.passed else 'FAIL'} | {r.agent_returncode} | "
-            f"{r.agent_duration_seconds} | {r.validation_returncode} | {notes} |"
+            f"| {r.name} | {'PASS' if r.passed else 'FAIL'} | {_failure_stage(r)} | "
+            f"{r.agent_returncode} | {r.agent_duration_seconds} | {r.validation_returncode} | {notes} |"
         )
+    if secret_scan and not secret_scan.get("passed"):
+        lines.extend(["", "## Secret scan findings", ""])
+        for hit in secret_scan.get("hits", []):
+            lines.append(f"- `{hit.get('path')}` ({hit.get('kind')})")
     lines.extend(["", "## 过程文件", ""])
     for r in results:
         lines.extend(
@@ -365,6 +469,16 @@ def write_eval_summary(
     shutil.copyfile(summary_json, run_dir.parent / "latest-summary.json")
     shutil.copyfile(summary_md, run_dir.parent / "latest-summary.md")
     return summary_json, summary_md
+
+
+def _failure_stage(result: EvalResult) -> str:
+    if result.passed:
+        return ""
+    if result.agent_timed_out:
+        return "agent_timeout"
+    if result.agent_returncode != 0:
+        return "agent"
+    return "validator"
 
 
 def basic_coding_suite(timeout_seconds: float = 360.0) -> EvalSuite:
@@ -395,7 +509,7 @@ def setup_create_pytest_project(workspace: Path) -> tuple[str, Validator]:
             notes.append("calc.py missing")
         if not (ws / "test_calc.py").exists():
             notes.append("test_calc.py missing")
-        rc, text = run_pytest(ws)
+        rc, text = run_pytest(ws, ["test_calc.py"])
         return rc, text, notes
 
     return _clean_prompt(prompt), validate
@@ -445,7 +559,7 @@ def setup_fix_existing_bug(workspace: Path) -> tuple[str, Validator]:
     """
 
     def validate(ws: Path) -> tuple[int, str, list[str]]:
-        rc, text = run_pytest(ws)
+        rc, text = run_pytest(ws, ["test_stats_utils.py"])
         return rc, text, []
 
     return _clean_prompt(prompt), validate
@@ -494,16 +608,17 @@ def setup_implement_slugify(workspace: Path) -> tuple[str, Validator]:
     """
 
     def validate(ws: Path) -> tuple[int, str, list[str]]:
-        rc, text = run_pytest(ws)
+        rc, text = run_pytest(ws, ["test_string_utils.py"])
         return rc, text, []
 
     return _clean_prompt(prompt), validate
 
 
-def run_pytest(workspace: Path) -> tuple[int, str]:
-    cmd = [sys.executable, "-m", "pytest", "-q"]
+def run_pytest(workspace: Path, test_files: Sequence[str] | None = None) -> tuple[int, str]:
+    ws = Path(workspace).resolve()
+    cmd = [sys.executable, "-m", "pytest", "-q", "--rootdir", str(ws), *(test_files or [])]
     completed = subprocess.run(
-        cmd, cwd=workspace, capture_output=True, text=True, timeout=120
+        cmd, cwd=ws, capture_output=True, text=True, timeout=120
     )
     text = (
         "$ " + " ".join(cmd) + "\n\n"
@@ -561,7 +676,8 @@ def main(argv: Sequence[str] | None = None) -> int:
         return 2
     print(f"Evaluation run saved to: {run.run_dir}")
     print(f"Passed: {run.passed}/{run.total}")
-    return 0 if run.passed == run.total else 1
+    print(f"Secret scan: {'PASS' if run.secret_scan_passed else 'FAIL'}")
+    return 0 if run.passed == run.total and run.secret_scan_passed else 1
 
 
 if __name__ == "__main__":
