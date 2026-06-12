@@ -1,0 +1,5 @@
+你正在评测目录里的独立工作区：/Users/shixiangweii/PycharmProjects/2026_qoder_proj/agent_loop_demo/评测/2026-6-12-04-m4.3-local/dgm-smoke/archive/runs/m4.2-smoke-20260612-190316-063974/20260612-190316/fix_existing_bug/workspace
+这里已有一个小 Python 项目，测试目前失败。
+请先运行 pytest -q 观察失败，再读取相关源码，修复 bug，最后再次运行 pytest -q 确认通过。
+完成后给出简短最终回复，不要继续调用工具。
+请优先使用绝对路径。

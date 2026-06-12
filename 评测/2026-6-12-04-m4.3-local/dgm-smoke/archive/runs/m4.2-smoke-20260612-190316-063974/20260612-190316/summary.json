@@ -1,0 +1,159 @@
+{
+  "suite": "basic-coding",
+  "run_dir": "/Users/shixiangweii/PycharmProjects/2026_qoder_proj/agent_loop_demo/评测/2026-6-12-04-m4.3-local/dgm-smoke/archive/runs/m4.2-smoke-20260612-190316-063974/20260612-190316",
+  "model": "fake-model",
+  "base_url": "",
+  "api_key_recorded": false,
+  "passed": 3,
+  "total": 3,
+  "secret_scan": {
+    "root": "/Users/shixiangweii/PycharmProjects/2026_qoder_proj/agent_loop_demo/评测/2026-6-12-04-m4.3-local/dgm-smoke/archive/runs/m4.2-smoke-20260612-190316-063974/20260612-190316",
+    "passed": true,
+    "hits": [],
+    "ignored": [
+      {
+        "path": "create_pytest_project/workspace/.pytest_cache/.gitignore",
+        "reason": "workspace source fixture is not a process artifact"
+      },
+      {
+        "path": "create_pytest_project/workspace/.pytest_cache/CACHEDIR.TAG",
+        "reason": "workspace source fixture is not a process artifact"
+      },
+      {
+        "path": "create_pytest_project/workspace/.pytest_cache/README.md",
+        "reason": "workspace source fixture is not a process artifact"
+      },
+      {
+        "path": "create_pytest_project/workspace/.pytest_cache/v/cache/nodeids",
+        "reason": "workspace source fixture is not a process artifact"
+      },
+      {
+        "path": "create_pytest_project/workspace/__pycache__/calc.cpython-312.pyc",
+        "reason": "workspace source fixture is not a process artifact"
+      },
+      {
+        "path": "create_pytest_project/workspace/__pycache__/test_calc.cpython-312-pytest-9.0.3.pyc",
+        "reason": "workspace source fixture is not a process artifact"
+      },
+      {
+        "path": "create_pytest_project/workspace/calc.py",
+        "reason": "workspace source fixture is not a process artifact"
+      },
+      {
+        "path": "create_pytest_project/workspace/test_calc.py",
+        "reason": "workspace source fixture is not a process artifact"
+      },
+      {
+        "path": "fix_existing_bug/workspace/.pytest_cache/.gitignore",
+        "reason": "workspace source fixture is not a process artifact"
+      },
+      {
+        "path": "fix_existing_bug/workspace/.pytest_cache/CACHEDIR.TAG",
+        "reason": "workspace source fixture is not a process artifact"
+      },
+      {
+        "path": "fix_existing_bug/workspace/.pytest_cache/README.md",
+        "reason": "workspace source fixture is not a process artifact"
+      },
+      {
+        "path": "fix_existing_bug/workspace/.pytest_cache/v/cache/nodeids",
+        "reason": "workspace source fixture is not a process artifact"
+      },
+      {
+        "path": "fix_existing_bug/workspace/__pycache__/stats_utils.cpython-312.pyc",
+        "reason": "workspace source fixture is not a process artifact"
+      },
+      {
+        "path": "fix_existing_bug/workspace/__pycache__/test_stats_utils.cpython-312-pytest-9.0.3.pyc",
+        "reason": "workspace source fixture is not a process artifact"
+      },
+      {
+        "path": "fix_existing_bug/workspace/stats_utils.py",
+        "reason": "workspace source fixture is not a process artifact"
+      },
+      {
+        "path": "fix_existing_bug/workspace/test_stats_utils.py",
+        "reason": "workspace source fixture is not a process artifact"
+      },
+      {
+        "path": "implement_slugify/workspace/.pytest_cache/.gitignore",
+        "reason": "workspace source fixture is not a process artifact"
+      },
+      {
+        "path": "implement_slugify/workspace/.pytest_cache/CACHEDIR.TAG",
+        "reason": "workspace source fixture is not a process artifact"
+      },
+      {
+        "path": "implement_slugify/workspace/.pytest_cache/README.md",
+        "reason": "workspace source fixture is not a process artifact"
+      },
+      {
+        "path": "implement_slugify/workspace/.pytest_cache/v/cache/nodeids",
+        "reason": "workspace source fixture is not a process artifact"
+      },
+      {
+        "path": "implement_slugify/workspace/__pycache__/string_utils.cpython-312.pyc",
+        "reason": "workspace source fixture is not a process artifact"
+      },
+      {
+        "path": "implement_slugify/workspace/__pycache__/test_string_utils.cpython-312-pytest-9.0.3.pyc",
+        "reason": "workspace source fixture is not a process artifact"
+      },
+      {
+        "path": "implement_slugify/workspace/string_utils.py",
+        "reason": "workspace source fixture is not a process artifact"
+      },
+      {
+        "path": "implement_slugify/workspace/test_string_utils.py",
+        "reason": "workspace source fixture is not a process artifact"
+      }
+    ]
+  },
+  "results": [
+    {
+      "name": "create_pytest_project",
+      "passed": true,
+      "agent_returncode": 0,
+      "agent_duration_seconds": 0.09,
+      "agent_timed_out": false,
+      "validation_returncode": 0,
+      "notes": [],
+      "workspace": "/Users/shixiangweii/PycharmProjects/2026_qoder_proj/agent_loop_demo/评测/2026-6-12-04-m4.3-local/dgm-smoke/archive/runs/m4.2-smoke-20260612-190316-063974/20260612-190316/create_pytest_project/workspace",
+      "prompt_file": "/Users/shixiangweii/PycharmProjects/2026_qoder_proj/agent_loop_demo/评测/2026-6-12-04-m4.3-local/dgm-smoke/archive/runs/m4.2-smoke-20260612-190316-063974/20260612-190316/create_pytest_project/task_prompt.txt",
+      "stdout_file": "/Users/shixiangweii/PycharmProjects/2026_qoder_proj/agent_loop_demo/评测/2026-6-12-04-m4.3-local/dgm-smoke/archive/runs/m4.2-smoke-20260612-190316-063974/20260612-190316/create_pytest_project/agent_stdout.txt",
+      "stderr_file": "/Users/shixiangweii/PycharmProjects/2026_qoder_proj/agent_loop_demo/评测/2026-6-12-04-m4.3-local/dgm-smoke/archive/runs/m4.2-smoke-20260612-190316-063974/20260612-190316/create_pytest_project/agent_stderr.txt",
+      "validation_file": "/Users/shixiangweii/PycharmProjects/2026_qoder_proj/agent_loop_demo/评测/2026-6-12-04-m4.3-local/dgm-smoke/archive/runs/m4.2-smoke-20260612-190316-063974/20260612-190316/create_pytest_project/validation.txt",
+      "attribution": {}
+    },
+    {
+      "name": "fix_existing_bug",
+      "passed": true,
+      "agent_returncode": 0,
+      "agent_duration_seconds": 0.08,
+      "agent_timed_out": false,
+      "validation_returncode": 0,
+      "notes": [],
+      "workspace": "/Users/shixiangweii/PycharmProjects/2026_qoder_proj/agent_loop_demo/评测/2026-6-12-04-m4.3-local/dgm-smoke/archive/runs/m4.2-smoke-20260612-190316-063974/20260612-190316/fix_existing_bug/workspace",
+      "prompt_file": "/Users/shixiangweii/PycharmProjects/2026_qoder_proj/agent_loop_demo/评测/2026-6-12-04-m4.3-local/dgm-smoke/archive/runs/m4.2-smoke-20260612-190316-063974/20260612-190316/fix_existing_bug/task_prompt.txt",
+      "stdout_file": "/Users/shixiangweii/PycharmProjects/2026_qoder_proj/agent_loop_demo/评测/2026-6-12-04-m4.3-local/dgm-smoke/archive/runs/m4.2-smoke-20260612-190316-063974/20260612-190316/fix_existing_bug/agent_stdout.txt",
+      "stderr_file": "/Users/shixiangweii/PycharmProjects/2026_qoder_proj/agent_loop_demo/评测/2026-6-12-04-m4.3-local/dgm-smoke/archive/runs/m4.2-smoke-20260612-190316-063974/20260612-190316/fix_existing_bug/agent_stderr.txt",
+      "validation_file": "/Users/shixiangweii/PycharmProjects/2026_qoder_proj/agent_loop_demo/评测/2026-6-12-04-m4.3-local/dgm-smoke/archive/runs/m4.2-smoke-20260612-190316-063974/20260612-190316/fix_existing_bug/validation.txt",
+      "attribution": {}
+    },
+    {
+      "name": "implement_slugify",
+      "passed": true,
+      "agent_returncode": 0,
+      "agent_duration_seconds": 0.08,
+      "agent_timed_out": false,
+      "validation_returncode": 0,
+      "notes": [],
+      "workspace": "/Users/shixiangweii/PycharmProjects/2026_qoder_proj/agent_loop_demo/评测/2026-6-12-04-m4.3-local/dgm-smoke/archive/runs/m4.2-smoke-20260612-190316-063974/20260612-190316/implement_slugify/workspace",
+      "prompt_file": "/Users/shixiangweii/PycharmProjects/2026_qoder_proj/agent_loop_demo/评测/2026-6-12-04-m4.3-local/dgm-smoke/archive/runs/m4.2-smoke-20260612-190316-063974/20260612-190316/implement_slugify/task_prompt.txt",
+      "stdout_file": "/Users/shixiangweii/PycharmProjects/2026_qoder_proj/agent_loop_demo/评测/2026-6-12-04-m4.3-local/dgm-smoke/archive/runs/m4.2-smoke-20260612-190316-063974/20260612-190316/implement_slugify/agent_stdout.txt",
+      "stderr_file": "/Users/shixiangweii/PycharmProjects/2026_qoder_proj/agent_loop_demo/评测/2026-6-12-04-m4.3-local/dgm-smoke/archive/runs/m4.2-smoke-20260612-190316-063974/20260612-190316/implement_slugify/agent_stderr.txt",
+      "validation_file": "/Users/shixiangweii/PycharmProjects/2026_qoder_proj/agent_loop_demo/评测/2026-6-12-04-m4.3-local/dgm-smoke/archive/runs/m4.2-smoke-20260612-190316-063974/20260612-190316/implement_slugify/validation.txt",
+      "attribution": {}
+    }
+  ]
+}

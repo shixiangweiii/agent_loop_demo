@@ -1,0 +1,4 @@
+diff --git a/.mu/prompts/smoke.md b/.mu/prompts/smoke.md
+--- a/.mu/prompts/smoke.md+++ b/.mu/prompts/smoke.md@@ -1 +1 @@-base
++promoted
+

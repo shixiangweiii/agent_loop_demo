@@ -1,0 +1,23 @@
+{
+  "candidate_id": "m4.3-promotion-20260612-190317-504130",
+  "archive_dir": "/Users/shixiangweii/PycharmProjects/2026_qoder_proj/agent_loop_demo/评测/2026-6-12-04-m4.3-local/dgm-promotion-smoke/archive",
+  "project_root": "/Users/shixiangweii/PycharmProjects/2026_qoder_proj/agent_loop_demo/评测/2026-6-12-04-m4.3-local/dgm-promotion-smoke/project",
+  "promotion_dir": "/Users/shixiangweii/PycharmProjects/2026_qoder_proj/agent_loop_demo/评测/2026-6-12-04-m4.3-local/dgm-promotion-smoke/archive/promotions/20260612-190317-554185-m4.3-promotion-20260612-190317-504130",
+  "candidate_workspace": "/Users/shixiangweii/PycharmProjects/2026_qoder_proj/agent_loop_demo/评测/2026-6-12-04-m4.3-local/dgm-promotion-smoke/archive/candidates/m4.3-promotion-20260612-190317-504130/workspace",
+  "changed_paths": [
+    ".mu/prompts/smoke.md"
+  ],
+  "patch_file": "/Users/shixiangweii/PycharmProjects/2026_qoder_proj/agent_loop_demo/评测/2026-6-12-04-m4.3-local/dgm-promotion-smoke/archive/promotions/20260612-190317-554185-m4.3-promotion-20260612-190317-504130/promotion.patch",
+  "summary_json_file": "/Users/shixiangweii/PycharmProjects/2026_qoder_proj/agent_loop_demo/评测/2026-6-12-04-m4.3-local/dgm-promotion-smoke/archive/promotions/20260612-190317-554185-m4.3-promotion-20260612-190317-504130/promotion-summary.json",
+  "summary_md_file": "/Users/shixiangweii/PycharmProjects/2026_qoder_proj/agent_loop_demo/评测/2026-6-12-04-m4.3-local/dgm-promotion-smoke/archive/promotions/20260612-190317-554185-m4.3-promotion-20260612-190317-504130/promotion-summary.md",
+  "secret_scan": {
+    "root": "/Users/shixiangweii/PycharmProjects/2026_qoder_proj/agent_loop_demo/评测/2026-6-12-04-m4.3-local/dgm-promotion-smoke/archive/promotions/20260612-190317-554185-m4.3-promotion-20260612-190317-504130",
+    "passed": true,
+    "hits": [],
+    "ignored": []
+  },
+  "preflight_output_file": "/Users/shixiangweii/PycharmProjects/2026_qoder_proj/agent_loop_demo/评测/2026-6-12-04-m4.3-local/dgm-promotion-smoke/archive/promotions/20260612-190317-554185-m4.3-promotion-20260612-190317-504130/preflight/pytest-output.txt",
+  "backup_dir": "/Users/shixiangweii/PycharmProjects/2026_qoder_proj/agent_loop_demo/评测/2026-6-12-04-m4.3-local/dgm-promotion-smoke/archive/promotions/20260612-190317-554185-m4.3-promotion-20260612-190317-504130/backups",
+  "applied": true,
+  "apply_error": null
+}

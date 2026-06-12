@@ -1,0 +1,9 @@
+$ /Users/shixiangweii/PycharmProjects/2026_qoder_proj/agent_loop_demo/.venv/bin/python -m pytest -q --rootdir /Users/shixiangweii/PycharmProjects/2026_qoder_proj/agent_loop_demo/评测/2026-6-12-04-m4.3-local/dgm-smoke/archive/runs/m4.2-smoke-20260612-190316-063974/20260612-190316/create_pytest_project/workspace test_calc.py
+
+[stdout]
+..                                                                       [100%]
+2 passed in 0.01s
+
+[stderr]
+
+[exit code] 0
