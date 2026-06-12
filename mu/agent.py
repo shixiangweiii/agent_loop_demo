@@ -30,9 +30,10 @@ from .events import (
     TurnFinished,
     TurnStarted,
 )
+from .codeact import CodeAction
 from .extension import ExtensionManager
 from .model import Model
-from .prompts import SYSTEM_PROMPT
+from .prompts import CODE_ACTION_HINT, SYSTEM_PROMPT
 from .session import Session
 from .tools import ToolRegistry, ToolResult
 
@@ -51,14 +52,21 @@ class Agent:
         convert_to_llm: Transform | None = None,
         extensions: bool = True,
         ext_dir: Any | None = None,
+        code_action: bool = False,
+        policy: Any | None = None,
+        env: Any | None = None,
     ) -> None:
         self.model = model if model is not None else Model()
-        self.tools = tools or ToolRegistry()
+        self.tools = tools or ToolRegistry(env=env, policy=policy)
         self.emitter = emitter or EventEmitter()
         self.session = session or Session()
         self.stream = stream
+        self.code_action = code_action
         self._transform = transform_context or ctx.transform_context
         self._convert = convert_to_llm or ctx.convert_to_llm
+        # M3.5：可选 native code-action（注册 `code` 工具）
+        if code_action:
+            CodeAction(self.tools, self.emitter).register()
         # 自延伸：ExtensionManager 在 registry 里注册 load/reload/list_extensions 管理工具
         self.extensions = (
             ExtensionManager(self.tools, self.session, self.emitter, ext_dir=ext_dir)
@@ -74,10 +82,12 @@ class Agent:
     async def run(self, task: str) -> str:
         # 新会话才注入 system；resume 时复用历史，仅追加新 user
         if self.session.head is None:
-            self.session.append({"role": "system", "content": SYSTEM_PROMPT})
+            sys_content = SYSTEM_PROMPT + (CODE_ACTION_HINT if self.code_action else "")
+            self.session.append({"role": "system", "content": sys_content})
         self.session.append({"role": "user", "content": task})
         self.emitter.emit(RunStarted(task, self.session.id))
-        if self.extensions is not None:
+        # 仅当策略允许「加载扩展」时才 autoload（restrictive 策略下跳过——加载即执行任意 Python）
+        if self.extensions is not None and self.tools.permits("load_extension"):
             await self.extensions.autoload()
 
         turn = 0

@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "mu"
 version = "0.1.0"
-description = "μ (mu) — a minimal, Pi-style async coding agent (M3 self-extension)"
+description = "μ (mu) — a minimal, Pi-style async coding agent (M3.5 code-action + sandbox)"
 requires-python = ">=3.12"
 dependencies = [
     "openai>=1.40",

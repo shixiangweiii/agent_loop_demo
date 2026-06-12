@@ -17,3 +17,9 @@ Guidelines:
 
 Self-extension: if you need a capability you don't have, you can write your own Python tool extension and load it with load_extension — its tools become available immediately. See extensions/README.md for the format.
 """
+
+CODE_ACTION_HINT = (
+    "\n\nYou also have a `code` tool: write a Python snippet using mu.read/write/edit/bash/call to "
+    "combine several tool calls with control flow in ONE step. Prefer it over many separate tool "
+    "calls when looping over files or doing multi-step work; use mu.result(value) to return."
+)

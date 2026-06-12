@@ -6,14 +6,21 @@ from __future__ import annotations
 
 import argparse
 import asyncio
+import os
 import sys
 
 from .agent import Agent
+from .environment import make_environment
 from .events import EventEmitter
 from .model import ConfigError
 from .observability import AttributionCollector
+from .permission import make_policy
 from .render import StdoutRenderer
 from .session import Session
+
+
+def _env_truthy(name: str) -> bool:
+    return os.environ.get(name, "") not in ("", "0", "false", "False")
 
 
 def _parse_args(argv: list[str]) -> argparse.Namespace:
@@ -23,6 +30,12 @@ def _parse_args(argv: list[str]) -> argparse.Namespace:
     p.add_argument("--branch", metavar="NODE_ID", help="从指定节点分支（配合 --resume）")
     p.add_argument("--stream", action="store_true", help="流式输出（默认关）")
     p.add_argument("--tui", action="store_true", help="启动 Textual 交互式终端界面（默认 headless）")
+    p.add_argument("--code", action="store_true", default=_env_truthy("MU_CODE_ACTION"),
+                   help="启用 native code-action（默认关）")
+    p.add_argument("--permission", default=os.environ.get("MU_PERMISSION", "allow"),
+                   choices=["allow", "readonly", "workspace"], help="权限策略（默认 allow=YOLO）")
+    p.add_argument("--sandbox", default=os.environ.get("MU_SANDBOX", "local"),
+                   choices=["local", "docker"], help="沙箱 provider（默认 local）")
     return p.parse_args(argv)
 
 
@@ -57,8 +70,10 @@ def main() -> int:
     emitter = EventEmitter()
     emitter.subscribe(StdoutRenderer())
     emitter.subscribe(AttributionCollector())
+    policy = make_policy(ns.permission)
+    env = make_environment(ns.sandbox)
     try:
-        asyncio.run(_run(task, session, emitter, ns.stream))
+        asyncio.run(_run(task, session, emitter, ns.stream, ns.code, policy, env))
     except ConfigError as e:
         print(f"Config error: {e}", file=sys.stderr)
         return 1
@@ -86,12 +101,28 @@ def _run_tui(ns: argparse.Namespace, task: str) -> int:
     except ImportError:
         print('TUI 需要 textual，请安装：pip install -e ".[tui]"', file=sys.stderr)
         return 1
-    MuApp(session=session, stream=ns.stream, initial_task=task or None).run()
+    policy = make_policy(ns.permission)
+    env = make_environment(ns.sandbox)
+
+    def _factory(emitter, session_, stream):
+        return Agent(emitter=emitter, session=session_, stream=stream,
+                     code_action=ns.code, policy=policy, env=env)
+
+    MuApp(session=session, stream=ns.stream, agent_factory=_factory, initial_task=task or None).run()
     return 0
 
 
-async def _run(task: str, session: Session, emitter: EventEmitter, stream: bool) -> None:
-    agent = Agent(emitter=emitter, session=session, stream=stream)
+async def _run(
+    task: str,
+    session: Session,
+    emitter: EventEmitter,
+    stream: bool,
+    code_action: bool,
+    policy,
+    env,
+) -> None:
+    agent = Agent(emitter=emitter, session=session, stream=stream,
+                  code_action=code_action, policy=policy, env=env)
     try:
         await agent.run(task)
     finally:

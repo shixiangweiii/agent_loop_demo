@@ -9,6 +9,7 @@ import functools
 from typing import Any, Awaitable, Callable
 
 from .environment import LocalEnvironment
+from .permission import PermissionPolicy, allow_all
 
 ToolHandler = Callable[[LocalEnvironment, dict[str, Any]], Awaitable[str]]
 # 统一后的处理器签名（内置工具用 functools.partial 绑定 env；扩展工具路由到子进程）
@@ -178,6 +179,14 @@ _HANDLERS: dict[str, ToolHandler] = {
     "bash": _bash,
 }
 
+# 内置工具的能力（permission 策略按能力 gate，而非按工具名）
+_CAPABILITIES: dict[str, set[str]] = {
+    "read": {"read"},
+    "write": {"write"},
+    "edit": {"write"},
+    "bash": {"shell"},
+}
+
 
 class ToolRegistry:
     """name -> (schema, async handler)。内置四工具固定；M3 起可动态 register/unregister 扩展工具。
@@ -186,13 +195,19 @@ class ToolRegistry:
     扩展工具路由到其子进程。execute 对外行为与 M0 一致。
     """
 
-    def __init__(self, env: LocalEnvironment | None = None) -> None:
+    def __init__(
+        self,
+        env: LocalEnvironment | None = None,
+        policy: PermissionPolicy | None = None,
+    ) -> None:
         self._env = env or LocalEnvironment()
+        self._policy: PermissionPolicy = policy or allow_all
         self._handlers: dict[str, RegisteredHandler] = {
             name: functools.partial(h, self._env) for name, h in _HANDLERS.items()
         }
         self._schemas: list[dict[str, Any]] = list(_SCHEMAS)
         self._builtins = set(_HANDLERS)
+        self._caps: dict[str, set[str]] = {n: set(c) for n, c in _CAPABILITIES.items()}
 
     def schemas(self) -> list[dict[str, Any]]:
         return self._schemas
@@ -200,18 +215,37 @@ class ToolRegistry:
     def names(self) -> list[str]:
         return list(self._handlers)
 
-    def register(self, name: str, schema: dict[str, Any], handler: RegisteredHandler) -> None:
-        """注册一个动态工具（扩展工具 / 管理工具）。重名直接拒绝。"""
+    def capabilities(self, name: str) -> set[str]:
+        return self._caps.get(name, set())
+
+    def permits(self, name: str, args: dict[str, Any] | None = None) -> bool:
+        """该工具在当前策略下是否被允许（不执行，仅判断）。"""
+        return self._policy(name, args or {}, self._caps.get(name, set())) is None
+
+    def register(
+        self,
+        name: str,
+        schema: dict[str, Any],
+        handler: RegisteredHandler,
+        capabilities: set[str] | None = None,
+    ) -> None:
+        """注册一个动态工具（扩展工具 / 管理工具 / code）。重名直接拒绝。
+
+        capabilities 不传时**保守默认** {write, shell}（restrictive 策略默认拦），
+        因为扩展工具的副作用未知，应宁可拦错也不放过。
+        """
         if name in self._handlers:
             raise ValueError(f"tool name already registered: {name!r}")
         self._handlers[name] = handler
         self._schemas.append(schema)
+        self._caps[name] = set(capabilities) if capabilities is not None else {"write", "shell"}
 
     def unregister(self, name: str) -> None:
         """注销动态工具（内置四工具受保护，不可注销）。"""
         if name in self._builtins or name not in self._handlers:
             return
         del self._handlers[name]
+        self._caps.pop(name, None)
         self._schemas = [
             s for s in self._schemas if s.get("function", {}).get("name") != name
         ]
@@ -220,6 +254,9 @@ class ToolRegistry:
         handler = self._handlers.get(name)
         if handler is None:
             return ToolResult(f"Error: unknown tool '{name}'.")
+        reason = self._policy(name, args, self._caps.get(name, set()))  # 按能力 gate
+        if reason:
+            return ToolResult(f"Error: permission denied: {reason}")
         try:
             result = await handler(args)
         except KeyError as e:

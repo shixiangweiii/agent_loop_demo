@@ -105,9 +105,10 @@ class ExtensionManager:
     # ---- 管理工具（注册进 registry，让 agent 能自延伸）----
 
     def _register_management_tools(self) -> None:
-        self._registry.register("load_extension", _LOAD_SCHEMA, self._tool_load)
-        self._registry.register("reload_extension", _RELOAD_SCHEMA, self._tool_reload)
-        self._registry.register("list_extensions", _LIST_SCHEMA, self._tool_list)
+        # 加载/重载扩展 = 执行任意 Python → extension_exec 能力（restrictive 策略会拦）
+        self._registry.register("load_extension", _LOAD_SCHEMA, self._tool_load, capabilities={"extension_exec"})
+        self._registry.register("reload_extension", _RELOAD_SCHEMA, self._tool_reload, capabilities={"extension_exec"})
+        self._registry.register("list_extensions", _LIST_SCHEMA, self._tool_list, capabilities={"read"})
 
     async def _tool_load(self, args: dict[str, Any]) -> str:
         ext = await self.load(args["path"])

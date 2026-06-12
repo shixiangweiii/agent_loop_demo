@@ -1,4 +1,4 @@
-# μ (mu) — minimal Pi-style coding agent · M3
+# μ (mu) — minimal Pi-style coding agent · M3.5（v1 完整）
 
 按 Pi 的实现思路用 Python 复刻的极简 coding agent：一个**薄 async loop** + **四个工具**（read / write / edit / bash）+ **原生 function-calling** + **OpenAI 兼容**模型后端（百炼/DashScope、DeepSeek、OpenAI…）。
 
@@ -7,6 +7,7 @@
 - **M1** harness 三件武器 + 可观测：**事件流**、**上下文管线**、**tree session（JSONL，可分支/续跑/侧分支摘要）**、provider 打磨（**可选流式** / abort / terminate）、**延迟-成本归因报告**。
 - **M2** Textual 终端界面：`--tui` 交互式 UI，复用同一 core（事件流的又一个消费者）。headless stdout 仍为默认。
 - **M3** 自延伸：agent 可**自己写 Python 工具扩展**并 `load_extension` 加载（子进程隔离 + JSONL 协议）；扩展状态存 session、`--resume` 恢复；`./.mu/extensions/` 启动自动加载。
+- **M3.5** native code-action（`--code`，一次写 Python 组合多工具）+ 可插拔权限/沙箱层（`--permission` / `--sandbox`，默认 YOLO）。**v1 到此完整。**
 
 ## 安装（用仓库自带 .venv）
 
@@ -77,7 +78,21 @@ agent 缺能力时可**自己写一个 Python 工具扩展**，用 `load_extensi
 ./.venv/bin/python -m mu "写一个统计词数的工具扩展，加载它，统计 'hello world foo' 的词数"
 ```
 
-> ⚠️ 隔离 ≠ 安全沙箱：M3 子进程只做崩溃隔离，扩展以 agent 同等权限运行（YOLO）。权限/沙箱在 M3.5。
+> ⚠️ 隔离 ≠ 安全沙箱：M3 子进程只做崩溃隔离，扩展以 agent 同等权限运行（YOLO）。权限/沙箱见 M3.5。
+
+## Code-action 与 安全/沙箱（M3.5，默认全关）
+
+```bash
+./.venv/bin/python -m mu --code "统计当前目录所有 .py 文件的总行数"   # 一次写 Python 循环 read，而非逐文件多轮
+./.venv/bin/python -m mu --permission readonly "改写 README"          # write/edit/bash 被拒，模型收到 permission denied
+./.venv/bin/python -m mu --sandbox docker "ls && echo hi"             # 若装了 docker：bash 在容器内执行
+```
+
+- **`--code`**：启用 `code` 工具——模型写 Python，用 `mu.read/write/edit/bash/call` + 控制流在**一次调用**内组合多个工具（少轮数/少 token）。亦可 `MU_CODE_ACTION=1`。
+- **`--permission allow|readonly|workspace`**：基于**能力**在 `ToolRegistry` 单一入口 gate 工具。`readonly`=只读（write/edit/bash/code/扩展加载**全部拒绝**）；`workspace`=写限定在 workspace 内（bash/code/扩展因无法限定而拒绝）；默认 `allow`（YOLO）。
+- **`--sandbox local|docker`**：可插拔 `Environment` provider；`docker` **仅把 bash 放容器**执行（`--network none` 网络隔离；实验性，需本机 docker）。⚠️ 文件工具仍是宿主 IO，不隔离。E2B/Modal 实现 `Environment` 协议即可插拔。
+
+> ⚠️ code-action 在 `allow` 下是进程内 exec（同 bash 风险，可 `import os` 绕过）；`readonly/workspace` 会整体拦掉 code 工具。code 超时是 soft timeout（线程可能滞留，但其 mu.* 调用会被拒）。要真隔离把 μ 跑容器里。三项默认全关，关掉即退回 M3 形态。
 
 ## 测试（无需联网）
 
@@ -85,7 +100,7 @@ agent 缺能力时可**自己写一个 Python 工具扩展**，用 `load_extensi
 ./.venv/bin/python -m pytest -q
 ```
 
-## 范围（截至 M3）
+## 范围（截至 M3.5 · v1 完整）
 
-已做：四工具 loop、事件流、上下文管线、tree session + branch summary、可选流式 / abort / terminate、归因底座、Textual TUI、自延伸扩展（子进程 + JSONL 协议）。
-刻意不做（守 Pi 极简，留后续阶段）：native code-action / 可插拔安全沙箱 / 权限（M3.5）、in-process 热重载、扩展市场、Web UI / textual serve、完整 compaction、交互式分支导航、$ 精确计费、并行工具执行、多 provider 切换。
+已做：四工具 loop、事件流、上下文管线、tree session + branch summary、可选流式 / abort / terminate、归因底座、Textual TUI、自延伸扩展（子进程 + JSONL 协议）、native code-action、可插拔权限/沙箱层。
+留作 v2（M4）：DGM-lite（扩展提案经 eval 护栏自改进）、程序性记忆 / meta-tool 编译、投机/异步执行。其余不做：受限解释器、E2B/Modal 具体实现、Web UI / textual serve、完整 compaction、$ 精确计费、并行工具、多 provider 切换。
