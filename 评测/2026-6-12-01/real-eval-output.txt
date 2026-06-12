@@ -1,9 +1,0 @@
-$ /Users/shixiangweii/PycharmProjects/2026_qoder_proj/agent_loop_demo/.venv/bin/python -m mu.eval --run-root /Users/shixiangweii/PycharmProjects/2026_qoder_proj/agent_loop_demo/评测/2026-6-12-01/real-eval-runs --timeout 360
-
-[stdout]
-Evaluation run saved to: /Users/shixiangweii/PycharmProjects/2026_qoder_proj/agent_loop_demo/评测/2026-6-12-01/real-eval-runs/20260612-111202
-Passed: 2/3
-
-[stderr]
-
-[exit code] 1

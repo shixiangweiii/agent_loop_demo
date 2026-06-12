@@ -1,7 +1,0 @@
-你正在评测目录里的独立工作区：/Users/shixiangweii/PycharmProjects/2026_qoder_proj/agent_loop_demo/评测/2026-6-12-01/dgm-smoke/archive/runs/m4-regression-smoke/20260612-111643/create_pytest_project/workspace
-请完成一个最小 Python 项目：
-1. 创建 calc.py，实现 add(a, b) 和 mul(a, b)。
-2. 创建 test_calc.py，用 pytest 覆盖 add 和 mul。
-3. 运行 pytest -q 确认通过。
-4. 完成后给出简短最终回复，不要继续调用工具。
-请优先使用绝对路径。
