@@ -1,0 +1,7 @@
+$ /Users/shixiangweii/PycharmProjects/2026_qoder_proj/agent_loop_demo/.venv/bin/python -m pytest -q
+
+[stdout]
+
+[stderr]
+
+[exit code] -9

@@ -1,0 +1,10 @@
+$ /Users/shixiangweii/PycharmProjects/2026_qoder_proj/agent_loop_demo/.venv/bin/python -m pytest -q
+
+[stdout]
+......................................................s................. [ 85%]
+............                                                             [100%]
+83 passed, 1 skipped in 7.37s
+
+[stderr]
+
+[exit code] 0
