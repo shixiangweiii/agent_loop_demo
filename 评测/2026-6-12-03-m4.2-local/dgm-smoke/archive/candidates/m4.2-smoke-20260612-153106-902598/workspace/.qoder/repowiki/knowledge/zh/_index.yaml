@@ -1,0 +1,57 @@
+# 知识卡导出索引文件
+schema_version: 1
+locale: zh-CN
+branch: main
+exported_at: "2026-06-12T07:27:42Z"
+modules:
+    "":
+        dir_name: μ (Mu) — Pi 风格极简异步 Agent 引擎
+        title: μ (Mu) — Pi 风格极简异步 Agent 引擎
+        scope: []
+        source_files: []
+        children: []
+        depends_on: []
+        related_to: []
+    docs_and_plan:
+        dir_name: μ (mu) — Pi 风格极简异步 Agent 引擎
+        title: μ (mu) — Pi 风格极简异步 Agent 引擎
+        scope:
+            - docs/
+            - plan/
+        source_files: []
+        children: []
+        depends_on: []
+        related_to: []
+    eval_artifacts:
+        dir_name: Agent Loop 评测与回归验证体系
+        title: Agent Loop 评测与回归验证体系
+        scope:
+            - 评测/
+            - 测试输出/
+            - temp/
+        source_files: []
+        children: []
+        depends_on: []
+        related_to:
+            - path: mu_core
+    mu_core:
+        dir_name: μ (Mu) 异步编程智能体核心
+        title: μ (Mu) 异步编程智能体核心
+        scope:
+            - mu/
+        source_files: []
+        children: []
+        depends_on: []
+        related_to:
+            - path: eval_artifacts
+            - path: tests
+    tests:
+        dir_name: Agent Loop 集成与回归测试套件
+        title: Agent Loop 集成与回归测试套件
+        scope:
+            - tests/
+        source_files: []
+        children: []
+        depends_on: []
+        related_to:
+            - path: mu_core
