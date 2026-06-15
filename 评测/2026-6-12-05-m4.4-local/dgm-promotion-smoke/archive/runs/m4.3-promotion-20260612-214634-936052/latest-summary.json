@@ -1,0 +1,37 @@
+{
+  "suite": "promotion-smoke",
+  "run_dir": "/Users/shixiangweii/run_proj/agent_loop_demo/评测/2026-6-12-05-m4.4-local/dgm-promotion-smoke/archive/runs/m4.3-promotion-20260612-214634-936052/20260612-214634",
+  "model": "fake-model",
+  "base_url": "",
+  "api_key_recorded": false,
+  "passed": 1,
+  "total": 1,
+  "secret_scan": {
+    "root": "/Users/shixiangweii/run_proj/agent_loop_demo/评测/2026-6-12-05-m4.4-local/dgm-promotion-smoke/archive/runs/m4.3-promotion-20260612-214634-936052/20260612-214634",
+    "passed": true,
+    "hits": [],
+    "ignored": [
+      {
+        "path": "marker/workspace/marker.txt",
+        "reason": "workspace source fixture is not a process artifact"
+      }
+    ]
+  },
+  "results": [
+    {
+      "name": "marker",
+      "passed": true,
+      "agent_returncode": 0,
+      "agent_duration_seconds": 0.07,
+      "agent_timed_out": false,
+      "validation_returncode": 0,
+      "notes": [],
+      "workspace": "/Users/shixiangweii/run_proj/agent_loop_demo/评测/2026-6-12-05-m4.4-local/dgm-promotion-smoke/archive/runs/m4.3-promotion-20260612-214634-936052/20260612-214634/marker/workspace",
+      "prompt_file": "/Users/shixiangweii/run_proj/agent_loop_demo/评测/2026-6-12-05-m4.4-local/dgm-promotion-smoke/archive/runs/m4.3-promotion-20260612-214634-936052/20260612-214634/marker/task_prompt.txt",
+      "stdout_file": "/Users/shixiangweii/run_proj/agent_loop_demo/评测/2026-6-12-05-m4.4-local/dgm-promotion-smoke/archive/runs/m4.3-promotion-20260612-214634-936052/20260612-214634/marker/agent_stdout.txt",
+      "stderr_file": "/Users/shixiangweii/run_proj/agent_loop_demo/评测/2026-6-12-05-m4.4-local/dgm-promotion-smoke/archive/runs/m4.3-promotion-20260612-214634-936052/20260612-214634/marker/agent_stderr.txt",
+      "validation_file": "/Users/shixiangweii/run_proj/agent_loop_demo/评测/2026-6-12-05-m4.4-local/dgm-promotion-smoke/archive/runs/m4.3-promotion-20260612-214634-936052/20260612-214634/marker/validation.txt",
+      "attribution": {}
+    }
+  ]
+}

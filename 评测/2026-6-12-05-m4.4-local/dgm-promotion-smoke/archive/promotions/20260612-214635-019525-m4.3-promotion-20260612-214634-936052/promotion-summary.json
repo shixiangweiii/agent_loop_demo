@@ -1,0 +1,23 @@
+{
+  "candidate_id": "m4.3-promotion-20260612-214634-936052",
+  "archive_dir": "/Users/shixiangweii/run_proj/agent_loop_demo/评测/2026-6-12-05-m4.4-local/dgm-promotion-smoke/archive",
+  "project_root": "/Users/shixiangweii/run_proj/agent_loop_demo/评测/2026-6-12-05-m4.4-local/dgm-promotion-smoke/project",
+  "promotion_dir": "/Users/shixiangweii/run_proj/agent_loop_demo/评测/2026-6-12-05-m4.4-local/dgm-promotion-smoke/archive/promotions/20260612-214635-019525-m4.3-promotion-20260612-214634-936052",
+  "candidate_workspace": "/Users/shixiangweii/run_proj/agent_loop_demo/评测/2026-6-12-05-m4.4-local/dgm-promotion-smoke/archive/candidates/m4.3-promotion-20260612-214634-936052/workspace",
+  "changed_paths": [
+    ".mu/prompts/smoke.md"
+  ],
+  "patch_file": "/Users/shixiangweii/run_proj/agent_loop_demo/评测/2026-6-12-05-m4.4-local/dgm-promotion-smoke/archive/promotions/20260612-214635-019525-m4.3-promotion-20260612-214634-936052/promotion.patch",
+  "summary_json_file": "/Users/shixiangweii/run_proj/agent_loop_demo/评测/2026-6-12-05-m4.4-local/dgm-promotion-smoke/archive/promotions/20260612-214635-019525-m4.3-promotion-20260612-214634-936052/promotion-summary.json",
+  "summary_md_file": "/Users/shixiangweii/run_proj/agent_loop_demo/评测/2026-6-12-05-m4.4-local/dgm-promotion-smoke/archive/promotions/20260612-214635-019525-m4.3-promotion-20260612-214634-936052/promotion-summary.md",
+  "secret_scan": {
+    "root": "/Users/shixiangweii/run_proj/agent_loop_demo/评测/2026-6-12-05-m4.4-local/dgm-promotion-smoke/archive/promotions/20260612-214635-019525-m4.3-promotion-20260612-214634-936052",
+    "passed": true,
+    "hits": [],
+    "ignored": []
+  },
+  "preflight_output_file": "/Users/shixiangweii/run_proj/agent_loop_demo/评测/2026-6-12-05-m4.4-local/dgm-promotion-smoke/archive/promotions/20260612-214635-019525-m4.3-promotion-20260612-214634-936052/preflight/pytest-output.txt",
+  "backup_dir": "/Users/shixiangweii/run_proj/agent_loop_demo/评测/2026-6-12-05-m4.4-local/dgm-promotion-smoke/archive/promotions/20260612-214635-019525-m4.3-promotion-20260612-214634-936052/backups",
+  "applied": true,
+  "apply_error": null
+}

@@ -1,0 +1,25 @@
+{
+  "best_candidate_id": "m4.3-promotion-20260612-214634-936052",
+  "total": 1,
+  "entries": [
+    {
+      "id": "m4.3-promotion-20260612-214634-936052",
+      "parent_id": null,
+      "description": "m4.3 promotion smoke",
+      "source_type": "dir",
+      "source_path": "/Users/shixiangweii/run_proj/agent_loop_demo/评测/2026-6-12-05-m4.4-local/dgm-promotion-smoke/candidate",
+      "changed_paths": [
+        ".mu/prompts/smoke.md"
+      ],
+      "candidate_workspace": "/Users/shixiangweii/run_proj/agent_loop_demo/评测/2026-6-12-05-m4.4-local/dgm-promotion-smoke/archive/candidates/m4.3-promotion-20260612-214634-936052/workspace",
+      "eval_run_dir": "/Users/shixiangweii/run_proj/agent_loop_demo/评测/2026-6-12-05-m4.4-local/dgm-promotion-smoke/archive/runs/m4.3-promotion-20260612-214634-936052/20260612-214634",
+      "passed": 1,
+      "total": 1,
+      "score": 1.0,
+      "duration_seconds": 0.07,
+      "total_tokens": 0,
+      "is_best": true,
+      "created_at": "2026-06-12T21:46:35"
+    }
+  ]
+}

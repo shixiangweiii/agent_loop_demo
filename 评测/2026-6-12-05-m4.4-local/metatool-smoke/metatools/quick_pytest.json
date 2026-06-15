@@ -1,0 +1,14 @@
+{
+  "name": "quick_pytest",
+  "version": "0.1",
+  "description": "Run pytest for a target path.",
+  "parameters": {
+    "type": "object",
+    "properties": {
+      "target": {
+        "type": "string"
+      }
+    }
+  },
+  "code": "import shlex\ntarget = shlex.quote(args.get('target') or '.')\nout = mu.bash('/Users/shixiangweii/run_proj/agent_loop_demo/.venv/bin/python -m pytest -q ' + target, timeout=120)\nmu.result(out)"
+}

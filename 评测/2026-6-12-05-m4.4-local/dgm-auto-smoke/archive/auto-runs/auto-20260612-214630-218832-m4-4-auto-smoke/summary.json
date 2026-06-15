@@ -1,0 +1,50 @@
+{
+  "id": "auto-20260612-214630-218832-m4-4-auto-smoke",
+  "archive_dir": "/Users/shixiangweii/run_proj/agent_loop_demo/评测/2026-6-12-05-m4.4-local/dgm-auto-smoke/archive",
+  "project_root": "/Users/shixiangweii/run_proj/agent_loop_demo",
+  "description": "m4.4 auto smoke",
+  "requested_count": 2,
+  "generated_count": 2,
+  "passed_count": 2,
+  "best_candidate_id": "auto-20260612-214630-218832-02-m4-4-auto-smoke",
+  "candidates": [
+    {
+      "index": 1,
+      "candidate_id": "auto-20260612-214630-218832-01-m4-4-auto-smoke",
+      "description": "m4.4 auto smoke (auto 1/2)",
+      "generated": true,
+      "passed": 3,
+      "total": 3,
+      "score": 1.0,
+      "changed_paths": [
+        ".mu/prompts/auto-one.md"
+      ],
+      "candidate_workspace": "/Users/shixiangweii/run_proj/agent_loop_demo/评测/2026-6-12-05-m4.4-local/dgm-auto-smoke/archive/candidates/auto-20260612-214630-218832-01-m4-4-auto-smoke/workspace",
+      "eval_run_dir": "/Users/shixiangweii/run_proj/agent_loop_demo/评测/2026-6-12-05-m4.4-local/dgm-auto-smoke/archive/runs/auto-20260612-214630-218832-01-m4-4-auto-smoke/20260612-214630",
+      "error": null
+    },
+    {
+      "index": 2,
+      "candidate_id": "auto-20260612-214630-218832-02-m4-4-auto-smoke",
+      "description": "m4.4 auto smoke (auto 2/2)",
+      "generated": true,
+      "passed": 3,
+      "total": 3,
+      "score": 1.0,
+      "changed_paths": [
+        ".mu/prompts/auto-two.md"
+      ],
+      "candidate_workspace": "/Users/shixiangweii/run_proj/agent_loop_demo/评测/2026-6-12-05-m4.4-local/dgm-auto-smoke/archive/candidates/auto-20260612-214630-218832-02-m4-4-auto-smoke/workspace",
+      "eval_run_dir": "/Users/shixiangweii/run_proj/agent_loop_demo/评测/2026-6-12-05-m4.4-local/dgm-auto-smoke/archive/runs/auto-20260612-214630-218832-02-m4-4-auto-smoke/20260612-214632",
+      "error": null
+    }
+  ],
+  "summary_json_file": "/Users/shixiangweii/run_proj/agent_loop_demo/评测/2026-6-12-05-m4.4-local/dgm-auto-smoke/archive/auto-runs/auto-20260612-214630-218832-m4-4-auto-smoke/summary.json",
+  "summary_md_file": "/Users/shixiangweii/run_proj/agent_loop_demo/评测/2026-6-12-05-m4.4-local/dgm-auto-smoke/archive/auto-runs/auto-20260612-214630-218832-m4-4-auto-smoke/summary.md",
+  "secret_scan": {
+    "root": "/Users/shixiangweii/run_proj/agent_loop_demo/评测/2026-6-12-05-m4.4-local/dgm-auto-smoke/archive/auto-runs/auto-20260612-214630-218832-m4-4-auto-smoke",
+    "passed": true,
+    "hits": [],
+    "ignored": []
+  }
+}

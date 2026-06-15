@@ -1,0 +1,10 @@
+$ /Users/shixiangweii/run_proj/agent_loop_demo/.venv/bin/python -m pytest -q
+
+[stdout]
+........................................................................ [ 59%]
+....................s.............................                       [100%]
+121 passed, 1 skipped in 33.64s
+
+[stderr]
+
+[exit code] 0

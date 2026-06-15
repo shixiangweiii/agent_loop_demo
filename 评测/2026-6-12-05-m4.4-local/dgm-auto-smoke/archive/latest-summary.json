@@ -1,0 +1,44 @@
+{
+  "best_candidate_id": "auto-20260612-214630-218832-02-m4-4-auto-smoke",
+  "total": 2,
+  "entries": [
+    {
+      "id": "auto-20260612-214630-218832-01-m4-4-auto-smoke",
+      "parent_id": null,
+      "description": "m4.4 auto smoke (auto 1/2)",
+      "source_type": "generate",
+      "source_path": null,
+      "changed_paths": [
+        ".mu/prompts/auto-one.md"
+      ],
+      "candidate_workspace": "/Users/shixiangweii/run_proj/agent_loop_demo/评测/2026-6-12-05-m4.4-local/dgm-auto-smoke/archive/candidates/auto-20260612-214630-218832-01-m4-4-auto-smoke/workspace",
+      "eval_run_dir": "/Users/shixiangweii/run_proj/agent_loop_demo/评测/2026-6-12-05-m4.4-local/dgm-auto-smoke/archive/runs/auto-20260612-214630-218832-01-m4-4-auto-smoke/20260612-214630",
+      "passed": 3,
+      "total": 3,
+      "score": 1.0,
+      "duration_seconds": 0.21,
+      "total_tokens": 0,
+      "is_best": false,
+      "created_at": "2026-06-12T21:46:32"
+    },
+    {
+      "id": "auto-20260612-214630-218832-02-m4-4-auto-smoke",
+      "parent_id": null,
+      "description": "m4.4 auto smoke (auto 2/2)",
+      "source_type": "generate",
+      "source_path": null,
+      "changed_paths": [
+        ".mu/prompts/auto-two.md"
+      ],
+      "candidate_workspace": "/Users/shixiangweii/run_proj/agent_loop_demo/评测/2026-6-12-05-m4.4-local/dgm-auto-smoke/archive/candidates/auto-20260612-214630-218832-02-m4-4-auto-smoke/workspace",
+      "eval_run_dir": "/Users/shixiangweii/run_proj/agent_loop_demo/评测/2026-6-12-05-m4.4-local/dgm-auto-smoke/archive/runs/auto-20260612-214630-218832-02-m4-4-auto-smoke/20260612-214632",
+      "passed": 3,
+      "total": 3,
+      "score": 1.0,
+      "duration_seconds": 0.21,
+      "total_tokens": 0,
+      "is_best": true,
+      "created_at": "2026-06-12T21:46:34"
+    }
+  ]
+}

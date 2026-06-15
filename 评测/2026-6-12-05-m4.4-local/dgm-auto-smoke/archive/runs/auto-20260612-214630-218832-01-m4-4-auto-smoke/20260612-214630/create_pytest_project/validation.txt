@@ -1,0 +1,9 @@
+$ /Users/shixiangweii/run_proj/agent_loop_demo/.venv/bin/python -m pytest -q --rootdir /Users/shixiangweii/run_proj/agent_loop_demo/评测/2026-6-12-05-m4.4-local/dgm-auto-smoke/archive/runs/auto-20260612-214630-218832-01-m4-4-auto-smoke/20260612-214630/create_pytest_project/workspace test_calc.py
+
+[stdout]
+..                                                                       [100%]
+2 passed in 0.03s
+
+[stderr]
+
+[exit code] 0
